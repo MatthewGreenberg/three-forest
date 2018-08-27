@@ -15,7 +15,6 @@ const WebGLCanvas = require('../components/WebGLCanvas/WebGLCanvas');
 // WebGL scenes
 const Ground = require('../webgl/scene/Ground');
 const Clouds = require('../webgl/scene/Clouds');
-const Cloud = require('../webgl/scene/Cloud');
 
 const { assets, webgl } = require('../context');
 
