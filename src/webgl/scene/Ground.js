@@ -63,10 +63,8 @@ module.exports = class Ground extends THREE.Object3D {
         {
           z: 0.01,
           y: 0.01,
-          x: 0.01
-        },
-        {
-          ease: Elastic.easeOut
+          x: 0.01,
+          ease: Back.easeOut,
         }
       );
     }
@@ -125,10 +123,5 @@ module.exports = class Ground extends THREE.Object3D {
     } else {
       this.createTree();
     }
-  }
-
-  update(dt = 0, time = 0) {
-    // This function gets propagated down from the WebGL app to all children
-    // this.rotation.y += dt * 0.05;
   }
 };
