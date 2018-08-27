@@ -14,6 +14,8 @@ const WebGLCanvas = require('../components/WebGLCanvas/WebGLCanvas');
 
 // WebGL scenes
 const Ground = require('../webgl/scene/Ground');
+const Clouds = require('../webgl/scene/Clouds');
+const Cloud = require('../webgl/scene/Cloud');
 
 const { assets, webgl } = require('../context');
 
@@ -21,6 +23,7 @@ class App extends BaseComponent {
   constructor(props) {
     super(props);
     this.ground = new Ground();
+
     this.state = {
       isLoaded: false,
       renderTrees: false,
@@ -46,12 +49,14 @@ class App extends BaseComponent {
 
     // propagate through entire scene graph any app changes
     webgl.onAppDidUpdate(oldProps, oldState, this.props, this.state);
+    console.log(webgl.scene);
   }
 
   componentDidMount() {
     // To avoid page pulling, text highlighting and such
     webgl.canvas.addEventListener('touchstart', this.handlePreventDefault);
     webgl.canvas.addEventListener('mousedown', this.handlePreventDefault);
+
     this.loadWebGL();
   }
 
@@ -68,8 +73,10 @@ class App extends BaseComponent {
         // Once loading is complete, swap to Landing section and ensure WebGL displays
         this.setState({ section: 'Landing', isLoaded: true });
       }, this.props.fakePreloadTime);
-     
+
       webgl.scene.add(this.ground);
+      this.clouds = new Clouds();
+      webgl.scene.add(this.clouds);
     });
   }
 
@@ -86,9 +93,7 @@ class App extends BaseComponent {
 
       default:
       case 'Landing':
-        return (
-          <Landing key="Landing" onRenderTrees={this.handelRenderTrees} />
-        );
+        return <Landing key="Landing" onRenderTrees={this.handelRenderTrees} />;
     }
   }
 

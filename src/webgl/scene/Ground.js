@@ -1,5 +1,5 @@
 const animate = require('@jam3/gsap-promise');
-const { gui, webgl, assets } = require('../../context');
+const { webgl } = require('../../context');
 module.exports = class Ground extends THREE.Object3D {
   constructor() {
     super();
@@ -10,7 +10,7 @@ module.exports = class Ground extends THREE.Object3D {
     var groundMat = new THREE.MeshPhongMaterial({
       color: 0x3399ff,
       shininess: 0,
-      name: 'ground'
+      name: 'ground',
     });
     this.ground = new THREE.Mesh(groundGeom, groundMat);
     this.ground.receiveShadow = true;
@@ -26,11 +26,12 @@ module.exports = class Ground extends THREE.Object3D {
     this.ground.add(tree);
     tree.position.x = (Math.random() - 0.5) * 350;
     tree.position.z = (Math.random() - 0.5) * 350;
-    var material = new THREE.MeshLambertMaterial({
-      color: 0x41654b + (Math.random() - 0.5) * 20
-    });
+    
     var prevHeight = 0;
-    var slices = this.getRandomNum(3,7);
+    var slices = this.getRandomNum(3, 7);
+    var material = new THREE.MeshLambertMaterial({
+      color: 0x41654b + (Math.random() - 0.5) * 100
+    });
     for (var i = 0; i <= slices; i++) {
       var index = i / slices;
       var height = Math.random() * 3 + 5;
@@ -65,7 +66,7 @@ module.exports = class Ground extends THREE.Object3D {
           x: 0.01
         },
         {
-          ease:  Elastic.easeOut,
+          ease: Elastic.easeOut
         }
       );
     }
@@ -78,22 +79,22 @@ module.exports = class Ground extends THREE.Object3D {
     tree.position.y = prevHeight + 3;
   }
 
-  changeColor(hits) {
-    console.log(hits[0].object)
-    
-      animate.to(hits[0].object.parent.scale, 0.25, new THREE.Vector3(0.4, 1, 1)).then(() => {
-      animate.to(hits[0].object.parent.scale, 0.25, new THREE.Vector3(1, 1, 1))
 
-      })
-    
-    
-
+  bend(hits) {
+    animate
+      .to(hits[0].object.parent.scale, 0.2, new THREE.Vector3(0.4, 1, 1))
+      .then(() => {
+        animate.to(
+          hits[0].object.parent.scale,
+          0.2,
+          new THREE.Vector3(1, 1, 1)
+        );
+      });
   }
 
-  onAppDidUpdate (oldProps, oldState, newProps, newState) {
-    console.log(oldState, newState)
+  onAppDidUpdate(oldProps, oldState, newProps, newState) {
     if (newState.renderTrees !== oldState.renderTrees) {
-      this.renderTrees()
+      this.renderTrees();
     }
   }
 
@@ -104,30 +105,29 @@ module.exports = class Ground extends THREE.Object3D {
     }
   }
 
-  onTouchStart (ev, pos) {
-    const [ x, y ] = pos;
-    console.log('Touchstart / mousedown: (%d, %d)', x, y);
+  onTouchStart(ev, pos) {
+    const [x, y] = pos;
 
     // For example, raycasting is easy:
     const coords = new THREE.Vector2().set(
-      pos[0] / webgl.width * 2 - 1,
-      -pos[1] / webgl.height * 2 + 1
+      (pos[0] / webgl.width) * 2 - 1,
+      (-pos[1] / webgl.height) * 2 + 1
     );
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(coords, webgl.camera);
     const hits = raycaster.intersectObject(this, true);
-   if (hits[0] && hits[0].object.material.name === 'ground') {
-      this.createTree()
+    if (hits[0] && hits[0].object.material.name === 'ground') {
+      this.createTree();
       return;
     }
     if (hits.length > 0) {
-      this.changeColor(hits)
+      this.bend(hits);
     } else {
-      this.createTree()
+      this.createTree();
     }
   }
 
-  update (dt = 0, time = 0) {
+  update(dt = 0, time = 0) {
     // This function gets propagated down from the WebGL app to all children
     // this.rotation.y += dt * 0.05;
   }
