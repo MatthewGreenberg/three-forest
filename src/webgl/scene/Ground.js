@@ -64,7 +64,7 @@ module.exports = class Ground extends THREE.Object3D {
           z: 0.01,
           y: 0.01,
           x: 0.01,
-          ease: Back.easeOut,
+          // ease: Back.easeOut,
         }
       );
     }
