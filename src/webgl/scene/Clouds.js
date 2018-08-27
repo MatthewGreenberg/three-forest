@@ -56,12 +56,6 @@ module.exports = class Clouds extends THREE.Object3D {
       });
   }
 
-  update(dt = 0, time = 0) {
-    // This function gets propagated down from the WebGL app to all children
-    // this.rotation.y += dt * 0.1;
-    
-  }
-
   onTouchStart(ev, pos) {
     const [x, y] = pos;
     console.log('Touchstart / mousedown: (%d, %d)', x, y);
@@ -79,10 +73,4 @@ module.exports = class Clouds extends THREE.Object3D {
       this.moveCloud(hits);
     }
   }
-
-  // onTouchMove (ev, pos) {
-  // }
-
-  // onTouchEnd (ev, pos) {
-  // }
 };
